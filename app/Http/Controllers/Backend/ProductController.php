@@ -295,11 +295,13 @@ class ProductController extends Controller
         $products = Product::latest()->get();
         return view('backend.product.product_stock', compact('products'));
     } // End Method 
+
     public function ProductExport()
     {
         $excel = app()->make(Excel::class);
         return $excel->download(new ProductExport, 'product.xlsx');
     }
+
     public function ProductImport()
     {
         return view('backend/product/import_product');
@@ -313,6 +315,6 @@ class ProductController extends Controller
 
         $excel->import(new ProductImport, $request->file('product'));
 
-        return redirect('/backend/product/product_all')->with('success', 'all good');
+        return redirect('all/product')->with('success', 'all good');
     }
 }
