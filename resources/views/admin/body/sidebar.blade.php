@@ -96,6 +96,12 @@
                 <li> <a href="{{ route('add.product') }}"><i class="bx bx-right-arrow-alt"></i>Add Product</a>
                 </li>
 
+                <li> <a href="{{ route('product.export') }}"><i class="bx bx-right-arrow-alt"></i>Export Product</a>
+                </li>
+
+                <li> <a href="{{ route('product.import') }}"><i class="bx bx-right-arrow-alt"></i>Import Product</a>
+                </li>
+
 
             </ul>
         </li>
