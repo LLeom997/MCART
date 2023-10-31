@@ -7,26 +7,28 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission; 
+use Spatie\Permission\Models\Permission;
 
 use App\Notifications\VendorApproveNotification;
 use Illuminate\Support\Facades\Notification;
-         
+
 class AdminController extends Controller
 {
-    public function AdminDashboard(){
+    public function AdminDashboard()
+    {
 
         return view('admin.index');
-
     } // End Mehtod 
 
 
-    public function AdminLogin(){
+    public function AdminLogin()
+    {
         return view('admin.admin_login');
     } // End Mehtod 
 
 
-public function AdminDestroy(Request $request){
+    public function AdminDestroy(Request $request)
+    {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -37,29 +39,30 @@ public function AdminDestroy(Request $request){
     } // End Mehtod 
 
 
-    public function AdminProfile(){
+    public function AdminProfile()
+    {
 
         $id = Auth::user()->id;
         $adminData = User::find($id);
-        return view('admin.admin_profile_view',compact('adminData'));
-
+        return view('admin.admin_profile_view', compact('adminData'));
     } // End Mehtod 
 
-    public function AdminProfileStore(Request $request){
+    public function AdminProfileStore(Request $request)
+    {
 
         $id = Auth::user()->id;
         $data = User::find($id);
         $data->name = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
-        $data->address = $request->address; 
+        $data->address = $request->address;
 
 
         if ($request->file('photo')) {
             $file = $request->file('photo');
-            @unlink(public_path('upload/admin_images/'.$data->photo));
-            $filename = date('YmdHi').$file->getClientOriginalName();
-            $file->move(public_path('upload/admin_images'),$filename);
+            @unlink(public_path('upload/admin_images/' . $data->photo));
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('upload/admin_images'), $filename);
             $data['photo'] = $filename;
         }
 
@@ -71,20 +74,21 @@ public function AdminDestroy(Request $request){
         );
 
         return redirect()->back()->with($notification);
-
     } // End Mehtod 
 
 
-    public function AdminChangePassword(){
+    public function AdminChangePassword()
+    {
         return view('admin.admin_change_password');
     } // End Mehtod 
 
 
-    public function AdminUpdatePassword(Request $request){
+    public function AdminUpdatePassword(Request $request)
+    {
         // Validation 
         $request->validate([
             'old_password' => 'required',
-            'new_password' => 'required|confirmed', 
+            'new_password' => 'required|confirmed',
         ]);
 
         // Match The Old Password
@@ -98,34 +102,34 @@ public function AdminDestroy(Request $request){
 
         ]);
         return back()->with("status", " Password Changed Successfully");
-
     } // End Mehtod 
 
 
 
-    public function InactiveVendor(){
-        $inActiveVendor = User::where('status','inactive')->where('role','vendor')->latest()->get();
-        return view('backend.vendor.inactive_vendor',compact('inActiveVendor'));
-
-    }// End Mehtod 
-
-
-    public function ActiveVendor(){
-        $ActiveVendor = User::where('status','active')->where('role','vendor')->latest()->get();
-        return view('backend.vendor.active_vendor',compact('ActiveVendor'));
-
-    }// End Mehtod 
+    public function InactiveVendor()
+    {
+        $inActiveVendor = User::where('status', 'inactive')->where('role', 'vendor')->latest()->get();
+        return view('backend.vendor.inactive_vendor', compact('inActiveVendor'));
+    } // End Mehtod 
 
 
-    public function InactiveVendorDetails($id){
+    public function ActiveVendor()
+    {
+        $ActiveVendor = User::where('status', 'active')->where('role', 'vendor')->latest()->get();
+        return view('backend.vendor.active_vendor', compact('ActiveVendor'));
+    } // End Mehtod 
+
+
+    public function InactiveVendorDetails($id)
+    {
 
         $inactiveVendorDetails = User::findOrFail($id);
-        return view('backend.vendor.inactive_vendor_details',compact('inactiveVendorDetails'));
+        return view('backend.vendor.inactive_vendor_details', compact('inactiveVendorDetails'));
+    } // End Mehtod 
 
-    }// End Mehtod 
 
-
-    public function ActiveVendorApprove(Request $request){
+    public function ActiveVendorApprove(Request $request)
+    {
 
         $verdor_id = $request->id;
         $user = User::findOrFail($verdor_id)->update([
@@ -137,22 +141,22 @@ public function AdminDestroy(Request $request){
             'alert-type' => 'success'
         );
 
-         $vuser = User::where('role','vendor')->get();
+        $vuser = User::where('role', 'vendor')->get();
         Notification::send($vuser, new VendorApproveNotification($request));
         return redirect()->route('active.vendor')->with($notification);
+    } // End Mehtod 
 
-    }// End Mehtod 
 
-
-    public function ActiveVendorDetails($id){
+    public function ActiveVendorDetails($id)
+    {
 
         $activeVendorDetails = User::findOrFail($id);
-        return view('backend.vendor.active_vendor_details',compact('activeVendorDetails'));
+        return view('backend.vendor.active_vendor_details', compact('activeVendorDetails'));
+    } // End Mehtod 
 
-    }// End Mehtod 
 
-
-     public function InActiveVendorApprove(Request $request){
+    public function InActiveVendorApprove(Request $request)
+    {
 
         $verdor_id = $request->id;
         $user = User::findOrFail($verdor_id)->update([
@@ -165,27 +169,29 @@ public function AdminDestroy(Request $request){
         );
 
         return redirect()->route('inactive.vendor')->with($notification);
-
-    }// End Mehtod 
-
- 
-     ///////////// Admin All Method //////////////
+    } // End Mehtod 
 
 
-    public function AllAdmin(){
-        $alladminuser = User::where('role','admin')->latest()->get();
-        return view('backend.admin.all_admin',compact('alladminuser'));
-    }// End Mehtod 
+    ///////////// Admin All Method //////////////
 
 
-    public function AddAdmin(){
+    public function AllAdmin()
+    {
+        $alladminuser = User::where('role', 'admin')->latest()->get();
+        return view('backend.admin.all_admin', compact('alladminuser'));
+    } // End Mehtod 
+
+
+    public function AddAdmin()
+    {
         $roles = Role::all();
-        return view('backend.admin.add_admin',compact('roles'));
-    }// End Mehtod 
+        return view('backend.admin.add_admin', compact('roles'));
+    } // End Mehtod 
 
 
 
-    public function AdminUserStore(Request $request){
+    public function AdminUserStore(Request $request)
+    {
 
         $user = new User();
         $user->username = $request->username;
@@ -202,27 +208,28 @@ public function AdminDestroy(Request $request){
             $user->assignRole($request->roles);
         }
 
-         $notification = array(
+        $notification = array(
             'message' => 'New Admin User Inserted Successfully',
             'alert-type' => 'success'
         );
 
         return redirect()->route('all.admin')->with($notification);
-
-    }// End Mehtod 
-
+    } // End Mehtod 
 
 
 
-    public function EditAdminRole($id){
+
+    public function EditAdminRole($id)
+    {
 
         $user = User::findOrFail($id);
         $roles = Role::all();
-        return view('backend.admin.edit_admin',compact('user','roles'));
-    }// End Mehtod 
+        return view('backend.admin.edit_admin', compact('user', 'roles'));
+    } // End Mehtod 
 
 
-    public function AdminUserUpdate(Request $request,$id){
+    public function AdminUserUpdate(Request $request, $id)
+    {
 
 
         $user = User::findOrFail($id);
@@ -230,7 +237,7 @@ public function AdminDestroy(Request $request){
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
-        $user->address = $request->address; 
+        $user->address = $request->address;
         $user->role = 'admin';
         $user->status = 'active';
         $user->save();
@@ -240,31 +247,30 @@ public function AdminDestroy(Request $request){
             $user->assignRole($request->roles);
         }
 
-         $notification = array(
+        $notification = array(
             'message' => 'New Admin User Updated Successfully',
             'alert-type' => 'success'
         );
 
         return redirect()->route('all.admin')->with($notification);
+    } // End Mehtod 
 
-    }// End Mehtod 
 
-
-    public function DeleteAdminRole($id){
+    public function DeleteAdminRole($id)
+    {
 
         $user = User::findOrFail($id);
         if (!is_null($user)) {
             $user->delete();
         }
- 
-         $notification = array(
+
+        $notification = array(
             'message' => 'Admin User Deleted Successfully',
             'alert-type' => 'success'
         );
 
         return redirect()->back()->with($notification);
-
-    }// End Mehtod 
+    } // End Mehtod 
 
 
 
@@ -272,4 +278,3 @@ public function AdminDestroy(Request $request){
 
 
 }
- 

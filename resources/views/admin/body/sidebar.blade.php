@@ -102,6 +102,10 @@
                 <li> <a href="{{ route('product.import') }}"><i class="bx bx-right-arrow-alt"></i>Import Product</a>
                 </li>
 
+                <li> <a href="{{ route('edit') }}"><i class="bx bx-right-arrow-alt"></i>Bulk Update
+                        Product</a>
+                </li>
+
 
             </ul>
         </li>
@@ -196,7 +200,8 @@
                 <div class="menu-title">Vendor Manage </div>
             </a>
             <ul>
-                <li> <a href="{{ route('inactive.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Inactive Vendor</a>
+                <li> <a href="{{ route('inactive.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Inactive
+                        Vendor</a>
                 </li>
                 <li> <a href="{{ route('active.vendor') }}"><i class="bx bx-right-arrow-alt"></i>Active Vendor</a>
                 </li>

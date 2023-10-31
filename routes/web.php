@@ -227,6 +227,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('product/export/', 'ProductExport')->name('product.export');
         Route::get('product/import/', 'ProductImport')->name('product.import');
         Route::Post('product/import/post', 'ProductImportPost')->name('product.import.post');
+
+        Route::get('product/edit/bulk', 'Edit')->name('edit');
+        Route::post('product/update/bulk', 'ProductUpdateBulk')->name('product.update.bulk');
     });
 
 

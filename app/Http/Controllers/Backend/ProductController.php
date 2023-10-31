@@ -15,6 +15,7 @@ use App\Models\User;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProductController extends Controller
@@ -316,5 +317,30 @@ class ProductController extends Controller
         $excel->import(new ProductImport, $request->file('product'));
 
         return redirect('all/product')->with('success', 'all good');
+    }
+
+    public function Edit()
+    {
+        $products = Product::all();
+        return view('backend/product/product_edit_bulk', compact('products'));
+    }
+
+    public function ProductUpdateBulk(Request $request)
+    {
+        foreach ($request->input('products') as $product => $productData) {
+            $item = Product::find($product);
+
+            if ($item) {
+                $item->update([
+                    'product_name' => $productData['product_name'],
+                    'selling_price' => $productData['selling_price'],
+                    'product_qty' => $productData['product_qty'],
+                    // Add more fields as needed
+                ]);
+            }
+        }
+
+        // Redirect back or to the desired page after updating.
+        return redirect()->route('edit');
     }
 }
