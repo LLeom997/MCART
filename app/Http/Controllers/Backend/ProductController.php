@@ -327,20 +327,31 @@ class ProductController extends Controller
 
     public function ProductUpdateBulk(Request $request)
     {
-        foreach ($request->input('products') as $product => $productData) {
-            $item = Product::find($product);
+        $action = $request->input('action');
 
-            if ($item) {
-                $item->update([
-                    'product_name' => $productData['product_name'],
-                    'selling_price' => $productData['selling_price'],
-                    'product_qty' => $productData['product_qty'],
-                    // Add more fields as needed
-                ]);
+        if ($action === 'update') {
+            foreach ($request->input('products') as $product => $productData) {
+                $item = Product::find($product);
+
+                if ($item) {
+                    $item->update([
+                        'product_name' => $productData['product_name'],
+                        'selling_price' => $productData['selling_price'],
+                        'discount_price' => $productData['discount_price'],
+                        'product_qty' => $productData['product_qty'],
+                        'status' => $productData['status'],
+                        // Add more fields as needed
+                    ]);
+                }
             }
-        }
 
-        // Redirect back or to the desired page after updating.
-        return redirect()->route('edit');
+            // Redirect back or to the desired page after updating.
+            return redirect()->route('edit');
+        } elseif ($action === 'delete') {
+            $selectedProducts = $request->input('selectedProducts');
+            Product::whereIn('id', $selectedProducts)->delete();
+
+            return redirect()->route('edit');
+        }
     }
 }
